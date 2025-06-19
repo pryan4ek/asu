@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Мероприятия — Кружки & Студии АлтГУ{% endblock %}
+{% block content %}
+    <h1>Анонсы предстоящих мероприятий</h1>
+    <ul class="list-unstyled">
+        {% for ev in events %}
+            <li class="mb-3">
+                <a href="{{ ev.get_absolute_url }}">{{ ev.title }}</a>
+                <small class="text-muted"> — {{ ev.published_at|date:"d.m.Y H:i" }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if is_paginated %}
+        <nav>{{ page_obj.paginator }}</nav>
+    {% endif %}
+{% endblock %}

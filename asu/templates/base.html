@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Портал кружков и студий Колледжа АлтГУ{% endblock %}</title>
+
+    <!-- Bootstrap и ваши стили -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet" crossorigin="anonymous"
+    >
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Header -->
+<header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">Кружки &amp; Студии АлтГУ</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Меню">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+                       href="{% url 'index' %}">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'clubs' %}active{% endif %}"
+                       href="{% url 'clubs' %}">Кружки</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'news_list' %}active{% endif %}"
+                       href="{% url 'news_list' %}">Новости</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+                       href="{% url 'contact' %}">Контакты</a>
+                </li>
+            </ul>
+
+            <!-- Поиск -->
+            <form class="d-flex me-3" action="{% url 'search' %}" method="get" role="search">
+                <input class="form-control form-control-sm me-2"
+                       type="search" name="q"
+                       placeholder="Поиск..." aria-label="Поиск">
+                <button class="btn btn-sm btn-outline-light" type="submit">Найти</button>
+            </form>
+
+            <!-- Аутентификация / профиль -->
+            {% if user.is_authenticated %}
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="userMenu" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ user.get_full_name|default:user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'student_portal:dashboard' %}">
+                                Личный кабинет
+                            </a>
+                        </li>
+                        {% if user.role == 'leader' %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'leader_dashboard' %}">
+                                    Кабинет руководителя
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if user.is_superuser or user.role == 'admin' %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'admin:index' %}">
+                                    Админ-панель
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Выйти</a>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <a class="btn btn-outline-light btn-sm me-2" href="{% url 'login' %}">Войти</a>
+                <a class="btn btn-warning btn-sm" href="{% url 'register' %}">Регистрация</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<main class="flex-fill py-5">
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-light text-muted pt-5 mt-auto">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-4">
+                <h5>Контакты</h5>
+                <address>
+                    ул. Ленина, 61, Барнаул, 656049<br>
+                    Тел.: +7 (3852) 20-00-00<br>
+                    E-mail: <a href="mailto:info@college.altstu.ru">info@college.altstu.ru</a>
+                </address>
+            </div>
+            <div class="col-md-4">
+                <h5>Меню</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'index' %}" class="link-secondary">Главная</a></li>
+                    <li><a href="{% url 'clubs' %}" class="link-secondary">Кружки</a></li>
+                    <li><a href="{% url 'news_list' %}" class="link-secondary">Новости</a></li>
+                    <li><a href="{% url 'contact' %}" class="link-secondary">Контакты</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Мы в соцсетях</h5>
+                <div class="d-flex gap-2">
+                    <a href="#" class="text-secondary" aria-label="VK"><i class="bi bi-vk"></i></a>
+                    <a href="#" class="text-secondary" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="text-secondary" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="text-center small pb-3">
+            &copy; {{ year }} Кружки &amp; Студии АлтГУ. Все права защищены.
+        </div>
+    </div>
+</footer>
+
+<!-- Скрипты -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<script src="{% static 'js/gallery.js' %}"></script>
+<script src="{% static 'js/map.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

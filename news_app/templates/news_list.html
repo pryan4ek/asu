@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Новости — Кружки & Студии АлтГУ{% endblock %}
+{% block content %}
+    <h1>Новости и объявления</h1>
+    <ul class="list-unstyled">
+        {% for item in news_list %}
+            <li class="mb-3">
+                <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
+                <small class="text-muted"> — {{ item.published_at|date:"d.m.Y H:i" }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if is_paginated %}
+        <nav>{{ page_obj.paginator }}</nav>
+    {% endif %}
+{% endblock %}

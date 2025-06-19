@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Уведомления{% endblock %}
+{% block content %}
+<h1>Уведомления</h1>
+<ul class="list-group">
+  {% for n in notifications %}
+  <li class="list-group-item">
+    {{ n.message }}
+    {% if n.link %}<a href="{{ n.link }}">(Перейти)</a>{% endif %}
+    <small class="text-muted">{{ n.created_at|date:"d.m.Y H:i" }}</small>
+  </li>
+  {% empty %}
+    <li class="list-group-item">Нет уведомлений.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

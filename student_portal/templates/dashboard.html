@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Личный кабинет — {{ user.username }}{% endblock %}
+{% block content %}
+    <h1>Личный кабинет</h1>
+
+    <h2>Ваши кружки</h2>
+    <ul class="list-group mb-4">
+        {% for sub in subscriptions %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <a href="{{ sub.club.get_absolute_url }}">{{ sub.club.name }}</a>
+                <a href="{% url 'student_portal:unsubscribe' sub.pk %}"
+                   class="btn btn-sm btn-outline-danger">Отписаться</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Пока вы ни на что не подписаны.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Расписание</h2>
+    <ul class="mb-4">
+        {% for item in schedule %}
+            <li><strong>{{ item.club.name }}</strong>: {{ item.text }}</li>
+        {% empty %}
+            <li>Нет предстоящих занятий.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Отзывы</h2>
+    <ul class="list-group mb-4">
+        {% for sub in subscriptions %}
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <span>{{ sub.club.name }}</span>
+                    <a href="{% url 'student_portal:leave_review' sub.club.id %}"
+                       class="btn btn-sm btn-outline-primary">
+                        {% if sub.club.id in reviewed_clubs %}
+                            Изменить отзыв
+                        {% else %}
+                            Оставить отзыв
+                        {% endif %}
+                    </a>
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Ничего</li>
+        {% endfor %}
+    </ul>
+
+
+    <h2>Уведомления</h2>
+    <ul class="list-group">
+        {% for n in notifications|default:user.notifications.all %}
+            <li class="list-group-item {% if not n.is_read %}fw-bold{% endif %}">
+                {{ n.message }}
+                {% if n.link %}<a href="{{ n.link }}">(Перейти)</a>{% endif %}
+                <small class="text-muted d-block">{{ n.created_at|date:"d.m.Y H:i" }}</small>
+            </li>
+        {% empty %}
+            <li class="list-group-item">У вас нет новых уведомлений.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

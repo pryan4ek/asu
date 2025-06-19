@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ news.title }} — Новости{% endblock %}
+{% block content %}
+    <article>
+        <h1>{{ news.title }}</h1>
+        <p class="text-muted">
+            {{ news.published_at|date:"d.m.Y H:i" }}
+            {% if news.club %} | Кружок: <a href="{{ news.club.get_absolute_url }}">{{ news.club.name }}</a>{% endif %}
+        </p>
+        {% if news.image %}
+            <img src="{{ news.image.url }}" class="img-fluid mb-4" alt="{{ news.title }}">
+        {% endif %}
+        <div>{{ news.content|linebreaks }}</div>
+    </article>
+{% endblock %}

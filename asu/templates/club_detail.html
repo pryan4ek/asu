@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ club.name }} — Кружки & Студии АлтГУ{% endblock %}
+
+{% block content %}
+    <article class="club-detail">
+        <h1 class="mb-4">{{ club.name }}</h1>
+
+        {% if club.logo %}
+            <img src="{{ club.logo.url }}" alt="{{ club.name }}" class="img-fluid mb-4 rounded">
+        {% endif %}
+
+        <section class="mb-5">
+            <h2>Описание</h2>
+            <p>{{ club.description|linebreaks }}</p>
+        </section>
+
+        {% if club.schedule %}
+            <section class="mb-5">
+                <h2>Расписание занятий</h2>
+                <p>{{ club.schedule|linebreaks }}</p>
+            </section>
+        {% endif %}
+
+        {% if club.location %}
+            <section class="mb-5">
+                <h2>Место проведения</h2>
+                <p>{{ club.location }}</p>
+            </section>
+        {% endif %}
+
+        {% if club.leader_name %}
+            <section class="mb-5">
+                <h2>Руководитель</h2>
+                <p><strong>{{ club.leader_name }}</strong><br>
+                    {{ club.leader_contact }}</p>
+            </section>
+        {% endif %}
+
+        <section class="mb-5">
+            {% if user.is_authenticated %}
+                {% if not applied %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Записаться</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-success">Ваша заявка отправлена и ожидает подтверждения.</div>
+                {% endif %}
+            {% else %}
+                <p>Чтобы записаться на кружок, пожалуйста, <a
+                        href="{% url 'login' %}?next={{ request.path }}">войдите</a> на сайт.</p>
+            {% endif %}
+        </section>
+    </article>
+{% endblock %}
