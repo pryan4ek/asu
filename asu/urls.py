@@ -18,6 +18,9 @@ urlpatterns = [
 
     # Основные публичные страницы
     path('', include('main.urls')),
+
+    path("", include("leader_portal.urls", namespace="leader_portal")),
+
 ]
 
 if settings.DEBUG:

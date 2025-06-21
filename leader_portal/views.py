@@ -10,21 +10,17 @@ from .models import Material
 from .forms import LeaderClubForm, MaterialForm
 
 
-# Декоратор: только для роли "leader"
-def leader_required(view_func):
-    decorated = login_required(
-        user_passes_test(lambda u: u.is_active and u.role == 'leader')(view_func)
-    )
-    return decorated
+def leader_required(view):
+    return login_required(user_passes_test(lambda u: u.is_active and u.role == 'leader')(view))
 
 
 @leader_required
 def dashboard(request):
-    # все кружки, которыми управляет текущий пользователь
+    # берем кружки, которыми управляет текущий руководитель
     clubs = request.user.managed_clubs.all()
-    return render(request, "leader_portal/dashboard.html", {
+    return render(request, "leader_portal/templates/dashboard.html", {
         "clubs": clubs,
-        "year": timezone.now().year,
+        "year": timezone.now().year
     })
 
 
@@ -38,10 +34,8 @@ def edit_club(request, pk):
             return redirect("leader_portal:dashboard")
     else:
         form = LeaderClubForm(instance=club)
-    return render(request, "leader_portal/edit_club.html", {
-        "form": form,
-        "club": club,
-        "year": timezone.now().year,
+    return render(request, "leader_portal/templates/edit_club.html", {
+        "form": form, "club": club, "year": timezone.now().year
     })
 
 
@@ -49,10 +43,8 @@ def edit_club(request, pk):
 def participants(request, pk):
     club = get_object_or_404(Club, pk=pk, manager=request.user)
     subs = Subscription.objects.filter(club=club, status='active')
-    return render(request, "leader_portal/participants.html", {
-        "club": club,
-        "subscriptions": subs,
-        "year": timezone.now().year,
+    return render(request, "leader_portal/templates/participants.html", {
+        "club": club, "subscriptions": subs, "year": timezone.now().year
     })
 
 
@@ -61,22 +53,20 @@ def manage_applications(request, pk):
     club = get_object_or_404(Club, pk=pk, manager=request.user)
     apps = Application.objects.filter(club=club, status='pending')
     if request.method == "POST":
-        action = request.POST.get("action")
+        act = request.POST.get("action")
         app_id = request.POST.get("app_id")
         app = get_object_or_404(Application, pk=app_id, club=club)
-        if action == "approve":
+        if act == "approve":
             app.status = "approved"
             app.moderated_at = timezone.now()
             app.save()
-        elif action == "reject":
+        elif act == "reject":
             app.status = "rejected"
             app.moderated_at = timezone.now()
             app.save()
         return redirect("leader_portal:manage_applications", pk=club.pk)
-    return render(request, "leader_portal/manage_applications.html", {
-        "club": club,
-        "applications": apps,
-        "year": timezone.now().year,
+    return render(request, "leader_portal/templates/manage_applications.html", {
+        "club": club, "applications": apps, "year": timezone.now().year
     })
 
 
@@ -93,9 +83,6 @@ def materials(request, pk):
             return redirect("leader_portal:materials", pk=club.pk)
     else:
         form = MaterialForm()
-    return render(request, "leader_portal/materials.html", {
-        "club": club,
-        "materials": mats,
-        "form": form,
-        "year": timezone.now().year,
+    return render(request, "leader_portal/templates/materials.html", {
+        "club": club, "materials": mats, "form": form, "year": timezone.now().year
     })
