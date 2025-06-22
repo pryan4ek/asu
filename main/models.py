@@ -1,101 +1,131 @@
-# leader_portal/views.py
+# main/models.py
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.conf import settings
+from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
-from main.models import Club, Application
-from student_portal.models import Subscription
-from .models import Material
-from .forms import LeaderClubForm, MaterialForm
+
+class Category(models.Model):
+    name = models.CharField("Название категории", max_length=100)
+    slug = models.SlugField("URL-идентификатор", max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
 
 
-# Декоратор: только для роли "leader"
-def leader_required(view_func):
-    decorated = login_required(
-        user_passes_test(lambda u: u.is_active and u.role == 'leader')(view_func)
-    )
-    return decorated
+class Club(models.Model):
+    name               = models.CharField("Название кружка/студии", max_length=150)
+    slug               = models.SlugField("URL-идентификатор", max_length=150, unique=True)
+    manager            = models.ForeignKey(
+                             settings.AUTH_USER_MODEL,
+                             verbose_name="Руководитель (пользователь)",
+                             on_delete=models.SET_NULL,
+                             null=True, blank=True,
+                             related_name="managed_clubs"
+                         )
+    short_description  = models.CharField("Краткое описание", max_length=255)
+    description        = models.TextField("Полное описание")
+    logo               = models.ImageField("Логотип", upload_to="clubs/", blank=True)
+    schedule           = models.TextField("Расписание занятий", blank=True)
+    location           = models.CharField("Место проведения", max_length=255, blank=True)
+    leader_name        = models.CharField("ФИО руководителя", max_length=150, blank=True)
+    leader_contact     = models.CharField("Контакты руководителя", max_length=255, blank=True)
+    categories         = models.ManyToManyField(Category, verbose_name="Категории", blank=True)
+    created_at         = models.DateTimeField("Дата создания", auto_now_add=True)
+    updated_at         = models.DateTimeField("Дата обновления", auto_now=True)
+
+    class Meta:
+        verbose_name = "Кружок/Студия"
+        verbose_name_plural = "Кружки и студии"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("club_detail", kwargs={"slug": self.slug})
 
 
-@leader_required
-def dashboard(request):
-    # все кружки, которыми управляет текущий пользователь
-    clubs = request.user.managed_clubs.all()
-    return render(request, "leader_portal/dashboard.html", {
-        "clubs": clubs,
-        "year": timezone.now().year,
-    })
+class Application(models.Model):
+    STATUS_CHOICES = [
+        ("pending",  "В ожидании"),
+        ("approved", "Одобрено"),
+        ("rejected", "Отклонено"),
+    ]
+
+    club          = models.ForeignKey(
+                        Club,
+                        verbose_name="Кружок",
+                        on_delete=models.CASCADE,
+                        related_name="applications"
+                     )
+    name          = models.CharField("Имя заявителя", max_length=100)
+    email         = models.EmailField("Email заявителя")
+    message       = models.TextField("Сообщение", blank=True)
+    status        = models.CharField("Статус", max_length=10, choices=STATUS_CHOICES, default="pending")
+    submitted_at  = models.DateTimeField("Дата подачи", default=timezone.now)
+    moderated_at  = models.DateTimeField("Дата модерации", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Заявка на вступление"
+        verbose_name_plural = "Заявки на вступление"
+        ordering = ["-submitted_at"]
+
+    def __str__(self):
+        return f"{self.club.name} – {self.name}"
 
 
-@leader_required
-def edit_club(request, pk):
-    club = get_object_or_404(Club, pk=pk, manager=request.user)
-    if request.method == "POST":
-        form = LeaderClubForm(request.POST, request.FILES, instance=club)
-        if form.is_valid():
-            form.save()
-            return redirect("leader_portal:dashboard")
-    else:
-        form = LeaderClubForm(instance=club)
-    return render(request, "leader_portal/edit_club.html", {
-        "form": form,
-        "club": club,
-        "year": timezone.now().year,
-    })
+class News(models.Model):
+    CATEGORY_CHOICES = [
+        ("news",  "Новость"),
+        ("event", "Событие"),
+    ]
+
+    title        = models.CharField("Заголовок", max_length=200)
+    slug         = models.SlugField("URL-идентификатор", max_length=200, unique=True)
+    content      = models.TextField("Содержимое")
+    category     = models.CharField("Тип материала", max_length=10, choices=CATEGORY_CHOICES, default="news")
+    is_approved  = models.BooleanField("Одобрено админом", default=False)
+    created_at   = models.DateTimeField("Дата создания", default=timezone.now)
+    published_at = models.DateTimeField("Дата публикации", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Новость/Событие"
+        verbose_name_plural = "Новости и события"
+        ordering = ["-published_at"]
+
+    def __str__(self):
+        return self.title
 
 
-@leader_required
-def participants(request, pk):
-    club = get_object_or_404(Club, pk=pk, manager=request.user)
-    subs = Subscription.objects.filter(club=club, status='active')
-    return render(request, "leader_portal/participants.html", {
-        "club": club,
-        "subscriptions": subs,
-        "year": timezone.now().year,
-    })
+class Location(models.Model):
+    name    = models.CharField("Название площадки", max_length=150, unique=True)
+    address = models.CharField("Адрес", max_length=255, blank=True)
+
+    class Meta:
+        verbose_name = "Место проведения"
+        verbose_name_plural = "Места проведения"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
 
 
-@leader_required
-def manage_applications(request, pk):
-    club = get_object_or_404(Club, pk=pk, manager=request.user)
-    apps = Application.objects.filter(club=club, status='pending')
-    if request.method == "POST":
-        action = request.POST.get("action")
-        app_id = request.POST.get("app_id")
-        app = get_object_or_404(Application, pk=app_id, club=club)
-        if action == "approve":
-            app.status = "approved"
-            app.moderated_at = timezone.now()
-            app.save()
-        elif action == "reject":
-            app.status = "rejected"
-            app.moderated_at = timezone.now()
-            app.save()
-        return redirect("leader_portal:manage_applications", pk=club.pk)
-    return render(request, "leader_portal/manage_applications.html", {
-        "club": club,
-        "applications": apps,
-        "year": timezone.now().year,
-    })
+class Leader(models.Model):
+    name  = models.CharField("ФИО руководителя", max_length=150, unique=True)
+    email = models.EmailField("E-mail руководителя", blank=True)
+    phone = models.CharField("Телефон руководителя", max_length=50, blank=True)
 
+    class Meta:
+        verbose_name = "Руководитель"
+        verbose_name_plural = "Руководители"
+        ordering = ["name"]
 
-@leader_required
-def materials(request, pk):
-    club = get_object_or_404(Club, pk=pk, manager=request.user)
-    mats = club.materials.all()
-    if request.method == "POST":
-        form = MaterialForm(request.POST, request.FILES)
-        if form.is_valid():
-            mat = form.save(commit=False)
-            mat.club = club
-            mat.save()
-            return redirect("leader_portal:materials", pk=club.pk)
-    else:
-        form = MaterialForm()
-    return render(request, "leader_portal/materials.html", {
-        "club": club,
-        "materials": mats,
-        "form": form,
-        "year": timezone.now().year,
-    })
+    def __str__(self):
+        return self.name
