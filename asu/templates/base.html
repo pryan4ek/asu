@@ -63,24 +63,30 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
                         <li>
-                            <a class="dropdown-item" href="{% url 'student_portal:dashboard' %}">
+                            <a class="dropdown-item" href="{% url 'leader_portal:dashboard' %}">
                                 Личный кабинет
                             </a>
                         </li>
+
+                        {# Ссылка в админ-панель содержимого (доступна руководителю и админам) #}
                         {% if user.role == 'leader' %}
                             <li>
-                                <a class="dropdown-item" href="{% url 'leader_dashboard' %}">
+                                <a class="dropdown-item"
+                                   href="{% url 'leader_portal:dashboard' %}">
                                     Кабинет руководителя
                                 </a>
                             </li>
                         {% endif %}
-                        {% if user.is_superuser or user.role == 'admin' %}
+
+                        {# Ссылка на встроенную Django Admin (для суперпользователя) #}
+                        {% if user.is_superuser %}
                             <li>
                                 <a class="dropdown-item" href="{% url 'admin:index' %}">
-                                    Админ-панель
+                                    Django Admin
                                 </a>
                             </li>
                         {% endif %}
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
