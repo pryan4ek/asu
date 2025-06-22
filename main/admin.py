@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Category, Club, Application, News
+from django.utils import timezone
 
 
 @admin.register(Category)
@@ -24,7 +25,11 @@ class ApplicationAdmin(admin.ModelAdmin):
 
     @admin.action(description="Одобрить выбранные заявки")
     def approve_applications(self, request, queryset):
-        queryset.update(status='approved')
+        now = timezone.now()
+        for app in queryset:
+            app.status = 'approved'
+            app.moderated_at = now
+            app.save()  # вызовет сигнал и создаст Subscription
 
     @admin.action(description="Отклонить выбранные заявки")
     def reject_applications(self, request, queryset):
