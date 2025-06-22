@@ -1,10 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Заявки на вступление — {{ club.name }}{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <h1>Заявки на вступление в «{{ club.name }}»</h1>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Email</th>
+            <th>Дата подачи</th>
+            <th class="text-center">Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for app in applications %}
+            <tr>
+                <td>{{ app.name }}</td>
+                <td>{{ app.email }}</td>
+                <td>{{ app.submitted_at|date:"d.m.Y H:i" }}</td>
+                <td class="text-center">
+                    <form action="" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="app_id" value="{{ app.pk }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">
+                            Одобрить
+                        </button>
+                    </form>
+                    <form action="" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="app_id" value="{{ app.pk }}">
+                        <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">
+                            Отклонить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">Нет ожидающих заявок.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'leader_portal:dashboard' %}" class="btn btn-secondary">← Назад</a>
+{% endblock %}

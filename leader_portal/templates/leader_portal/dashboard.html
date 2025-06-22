@@ -15,7 +15,7 @@
         {% for club in clubs %}
             <tr>
                 <td>{{ club.name }}</td>
-                <td>{{ club.subscriptions.filter(status='active').count }}</td>
+                <td>{{ club.active_subscriptions_count }}</td>
                 <td class="text-end">
                     <a href="{% url 'leader_portal:edit_club' club.pk %}" class="btn btn-sm btn-outline-primary">
                         Редактировать
