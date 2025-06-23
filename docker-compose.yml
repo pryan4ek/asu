@@ -1,0 +1,25 @@
+services:
+  web:
+    image: matrix_fastapi:1
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/code
+    ports:
+      - "${HOST_PORT}:8000"
+    env_file:
+      - .env
+    working_dir: /code
+    restart: unless-stopped
+
+  migrations:
+    image: matrix_fastapi:1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "alembic upgrade head"
+    env_file:
+      - .env
+    volumes:
+      - .:/code
+    working_dir: /code

@@ -68,7 +68,7 @@ def club_detail(request, slug):
 
 def news_list(request):
     posts = News.objects.filter(is_approved=True).order_by("-published_at")
-    return render(request, "news_list.html", {
+    return render(request, "news_app/news_list.html", {
         "news_list": posts,
         "year": timezone.now().year,
     })
@@ -76,7 +76,7 @@ def news_list(request):
 
 def news_detail(request, slug):
     post = get_object_or_404(News, slug=slug, is_approved=True)
-    return render(request, "news_detail.html", {
+    return render(request, "news_app/news_detail.html", {
         "news": post,
         "year": timezone.now().year,
     })

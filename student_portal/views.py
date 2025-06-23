@@ -21,7 +21,7 @@ def dashboard(request):
 
     reviews = {r.club_id: r for r in request.user.reviews.all()}
 
-    return render(request, 'dashboard.html', {
+    return render(request, 'student_portal/dashboard.html', {
         'subscriptions': subs,
         'schedule': schedule,
         'reviews': reviews,
@@ -70,7 +70,7 @@ def leave_review(request, club_id):
     else:
         form = ReviewForm(instance=review)
 
-    return render(request, 'leave_review.html', {
+    return render(request, 'student_portal/leave_review.html', {
         'form': form,
         'club': club,
         'year': timezone.now().year,
@@ -81,7 +81,7 @@ def leave_review(request, club_id):
 def notifications(request):
     notes = request.user.notifications.all()
     notes.update(is_read=True)
-    return render(request, 'notifications.html', {
+    return render(request, 'student_portal/notifications.html', {
         'notifications': notes,
         'year': timezone.now().year,
     })

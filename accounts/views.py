@@ -19,11 +19,11 @@ def register(request):
             return redirect('index')
     else:
         form = StudentSignUpForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'accounts/register.html', {'form': form})
 
 
 class CustomLoginView(LoginView):
-    template_name = 'login.html'
+    template_name = 'accounts/login.html'
 
     def get_success_url(self):
         return reverse_lazy('student_portal:dashboard')
