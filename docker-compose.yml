@@ -1,7 +1,7 @@
 services:
   web:
     image: diplom:1
-    command: python manage.py runserver
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
@@ -16,7 +16,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python manage.py migrate
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput"
     env_file:
       - .env
     volumes:
