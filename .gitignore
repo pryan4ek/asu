@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.log
+
+# Django
+*.sqlite3
+db.sqlite3
+*.pot
+*.pyc
+*.mo
+*.log
+
+# Media / Static
+staticfiles/
+/static/
+/static_cdn/
+/media_cdn/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+
+# VS Code / PyCharm / Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# dotenv / secret config
+.env
+.env.*
+
+# Migrations (optional — если не хотите трекать автосозданные)
+**/migrations/*.pyc
+**/migrations/__pycache__/
+# Оставлять __init__.py можно
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# pytest / coverage
+htmlcov/
+.tox/
+.coverage
+.cache
+.pytest_cache/
+
+# Docker / deployment
+docker-compose.override.yml
+*.pid
+*.sock
+*.pid.lock
