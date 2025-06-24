@@ -47,7 +47,7 @@
             </ul>
 
             <!-- Поиск -->
-            <form class="d-flex me-3" action="{% url 'search' %}" method="get" role="search">
+            <form class="d-flex me-3 mb-2 mb-lg-0" action="{% url 'search' %}" method="get" role="search">
                 <input class="form-control form-control-sm me-2"
                        type="search" name="q"
                        placeholder="Поиск..." aria-label="Поиск">
@@ -96,9 +96,9 @@
                     </ul>
                 </div>
             {% else %}
-                <div class="d-flex align-items-center gap-1">
-                <a class="btn btn-outline-light btn-sm me-2" href="{% url 'login' %}">Войти</a>
-                <a class="btn btn-warning btn-sm" href="{% url 'register' %}">Регистрация</a>
+                <div class="d-flex align-items-center gap-2 ms-3">
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Войти</a>
+                    <a class="btn btn-warning btn-sm" href="{% url 'register' %}">Регистрация</a>
                 </div>
             {% endif %}
         </div>
