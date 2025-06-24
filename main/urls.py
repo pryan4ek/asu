@@ -6,6 +6,7 @@ urlpatterns = [
     # Публичные
     path("", views.index, name="index"),
     path("clubs/", views.clubs, name="clubs"),
+    path('search/', views.clubs, name='search'),
     path("clubs/<slug:slug>/", views.club_detail, name="club_detail"),
     path("news/", views.news_list, name="news_list"),
     path("news/<slug:slug>/", views.news_detail, name="news_detail"),

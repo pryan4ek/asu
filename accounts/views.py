@@ -48,3 +48,4 @@ admin_required = role_required('admin')
 def logout_view(request):
     logout(request)
     return redirect('index')
+

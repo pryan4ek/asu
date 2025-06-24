@@ -7,10 +7,14 @@
 
     <!-- Форма фильтрации + поиска -->
     <form method="get" class="row g-3 mb-5">
+        <!-- категория -->
         <div class="col-md-4">
             <label for="id_category" class="form-label">Категория</label>
-            <select id="id_category" name="category" class="form-select" onchange="this.form.submit()">
-                <option value="" {% if not selected_category %}selected{% endif %}>Все категории</option>
+            <select id="id_category" name="category" class="form-select"
+                    onchange="this.form.submit()">
+                <option value="" {% if not selected_category %}selected{% endif %}>
+                    Все категории
+                </option>
                 {% for cat in categories %}
                     <option value="{{ cat.slug }}"
                             {% if selected_category == cat.slug %}selected{% endif %}>
@@ -19,6 +23,7 @@
                 {% endfor %}
             </select>
         </div>
+        <!-- поиск -->
         <div class="col-md-6">
             <label for="id_q" class="form-label">Поиск по названию</label>
             <input type="text" id="id_q" name="q"
@@ -26,10 +31,12 @@
                    class="form-control"
                    placeholder="Введите название кружка">
         </div>
+        <!-- кнопка -->
         <div class="col-md-2 d-flex align-items-end">
             <button type="submit" class="btn btn-primary w-100">Найти</button>
         </div>
     </form>
+
 
     {% if clubs %}
         <div class="row g-4">

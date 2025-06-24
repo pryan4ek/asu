@@ -1,8 +1,7 @@
 # main/views.py
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, DetailView
@@ -11,8 +10,8 @@ from django.urls import reverse_lazy
 from django.db.models import Count, Q
 
 from .models import Category, Club, Application, News
-from .forms import ContactForm, ClubForm, CategoryForm, NewsForm, ApplicationForm
-
+from .forms import ContactForm, ClubForm, CategoryForm
+from django.utils import timezone
 
 # --- Public views ---
 
@@ -264,4 +263,39 @@ def dashboard_stats(request):
         "total_applications": total_applications,
         "total_news": total_news,
         "year": timezone.now().year,
+    })
+
+
+
+
+def clubs(request):
+    """
+    Выводит страницу каталога кружков, поддерживает фильтр по категории
+    и поиск по названию/описанию.
+    """
+    selected_category = request.GET.get('category', '')
+    search_q          = request.GET.get('q', '').strip()
+
+    qs = Club.objects.all()
+
+    if selected_category:
+        qs = qs.filter(categories__slug=selected_category)
+
+    if search_q:
+        qs = qs.filter(
+            Q(name__icontains=search_q) |
+            Q(short_description__icontains=search_q) |
+            Q(description__icontains=search_q)
+        )
+
+    qs = qs.distinct()
+
+    categories = Category.objects.all()
+
+    return render(request, 'clubs.html', {
+        'clubs':             qs,
+        'categories':        categories,
+        'selected_category': selected_category,
+        'search_q':          search_q,
+        'year':              timezone.now().year,
     })
