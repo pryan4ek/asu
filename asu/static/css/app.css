@@ -1,45 +1,199 @@
 .carousel-item {
-  height: 60vh;
-  background-size: cover;
-  background-position: center;
+    height: 60vh;
+    background-size: cover;
+    background-position: center;
 }
+
 .carousel-caption {
-  background: rgba(0,0,0,0.5);
-  padding: 1rem;
-  border-radius: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 0.5rem;
 }
 
 /* Hero-слайдер */
 #heroCarousel .carousel-item img {
-  height: 60vh;
-  object-fit: cover;
+    height: 60vh;
+    object-fit: cover;
 }
+
 #heroCarousel .carousel-caption {
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
 }
 
 /* Секции */
 section {
-  scroll-margin-top: 80px; /* для якорных ссылок */
+    scroll-margin-top: 80px; /* для якорных ссылок */
 }
 
 /* Карточки */
 .card {
-  transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
 /* Кнопки */
 .btn-primary {
-  --bs-btn-bg: #0055A4;     /* фирменный синий */
-  --bs-btn-hover-bg: #004080;
+    --bs-btn-bg: #0055A4; /* фирменный синий */
+    --bs-btn-hover-bg: #004080;
 }
+
 .btn-warning {
-  --bs-btn-bg: #FF8000;     /* фирменный оранжевый */
-  --bs-btn-hover-bg: #e67300;
+    --bs-btn-bg: #FF8000; /* фирменный оранжевый */
+    --bs-btn-hover-bg: #e67300;
+}
+
+
+/* app.css */
+
+/* ------ Общие стили ------ */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Убираем подчеркивание у ссылок по умолчанию и задаем плавный hover */
+a {
+    color: #0d6efd;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #084298;
+    text-decoration: underline;
+}
+
+/* Зоны секций */
+section {
+    margin-bottom: 3rem;
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* ------ Header ------ */
+.navbar-brand {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* Подсветка активного пункта меню */
+.navbar-nav .nav-link.active {
+    font-weight: 500;
+    border-bottom: 2px solid #ffc107;
+}
+
+/* Кнопки в Navbar */
+.navbar .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.navbar .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ------ Hero / Слайдер ------ */
+#hero {
+    position: relative;
+}
+
+#hero .carousel-item {
+    height: 60vh;
+    min-height: 300px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Прозрачный градиент под текст */
+#hero .carousel-caption {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+/* ------ Карточки программ и лабораторий ------ */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Изображения в картах */
+.card-img-top {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+/* ------ Списки новостей и событий ------ */
+.news-events h3 {
+    font-size: 1.3rem;
+}
+
+.list-unstyled li + li {
+    margin-top: 0.75rem;
+}
+
+/* ------ Формы ------ */
+.form-control, .form-select {
+    border-radius: 0.375rem;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #084298;
+    border-color: #084298;
+}
+
+/* ------ Таблицы ------ */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+}
+
+.table tbody tr {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+    border-bottom: none;
+    color: #555;
+}
+
+/* ------ Footer ------ */
+footer {
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: inherit;
+}
+
+footer a:hover {
+    color: #0d6efd;
 }

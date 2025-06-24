@@ -1,0 +1,52 @@
+{# asu/templates/contact.html #}
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Контакты — Кружки & Студии АлтГУ{% endblock %}
+
+{% block content %}
+    <section id="contact" class="py-5">
+        <h1>Контакты</h1>
+        <div class="row">
+            <!-- Информация -->
+            <div class="col-md-6 mb-4">
+                <h4>Адрес</h4>
+                <address>
+                    ул. Ленина, 61<br>
+                    Барнаул, 656049
+                </address>
+
+                <h4>Телефон</h4>
+                <p>+7 (3852) 20-00-00</p>
+
+                <h4>E-mail</h4>
+                <p><a href="mailto:info@college.asuclubs.ru">info@college.asuclubs.ru</a></p>
+            </div>
+
+            <!-- Форма обратной связи -->
+            <div class="col-md-6">
+                <h4>Напишите нам</h4>
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Ваше имя</label>
+                        <input type="text" name="name" id="id_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">E-mail</label>
+                        <input type="email" name="email" id="id_email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_message" class="form-label">Сообщение</label>
+                        <textarea name="message" id="id_message" rows="5" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}
