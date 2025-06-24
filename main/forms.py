@@ -1,7 +1,7 @@
 # main/forms.py
 
 from django import forms
-from .models import Category, Club, News, Application
+from .models import Category, Club, Application
 
 
 class ContactForm(forms.Form):
@@ -64,30 +64,6 @@ class ClubForm(forms.ModelForm):
             "logo": forms.ClearableFileInput(attrs={"class": "form-control"}),
             "categories": forms.CheckboxSelectMultiple(),
         }
-
-
-class NewsForm(forms.ModelForm):
-    """Форма для создания/редактирования новостей и событий."""
-
-    class Meta:
-        model = News
-        fields = [
-            "title",
-            "slug",
-            "content",
-            "category",
-            "is_approved",
-            "published_at",
-        ]
-        widgets = {
-            "title": forms.TextInput(attrs={"class": "form-control"}),
-            "slug": forms.TextInput(attrs={"class": "form-control"}),
-            "content": forms.Textarea(attrs={"class": "form-control", "rows": 6}),
-            "category": forms.Select(attrs={"class": "form-select"}),
-            "is_approved": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "published_at": forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime-local"}),
-        }
-
 
 class ApplicationForm(forms.ModelForm):
     """Форма подачи заявки на вступление в кружок/студию."""

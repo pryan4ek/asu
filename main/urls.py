@@ -8,8 +8,6 @@ urlpatterns = [
     path("clubs/", views.clubs, name="clubs"),
     path('search/', views.clubs, name='search'),
     path("clubs/<slug:slug>/", views.club_detail, name="club_detail"),
-    path("news/", views.news_list, name="news_list"),
-    path("news/<slug:slug>/", views.news_detail, name="news_detail"),
     path("contacts/", views.contact, name="contact"),
     path("search/", views.search, name="search"),
 
@@ -34,11 +32,6 @@ urlpatterns = [
          name="dashboard_application_detail"),
     path("dashboard/applications/<int:pk>/approve/", views.approve_application, name="dashboard_application_approve"),
     path("dashboard/applications/<int:pk>/reject/", views.reject_application, name="dashboard_application_reject"),
-
-    # Модерация новостей
-    path("dashboard/news/", views.NewsListView.as_view(), name="dashboard_news_list"),
-    path("dashboard/news/<int:pk>/approve/", views.approve_news, name="dashboard_news_approve"),
-    path("dashboard/news/<int:pk>/unapprove/", views.unapprove_news, name="dashboard_news_unapprove"),
 
     # Статистика
     path("dashboard/stats/", views.dashboard_stats, name="dashboard_stats"),

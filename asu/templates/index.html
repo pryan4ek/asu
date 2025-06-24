@@ -33,7 +33,7 @@
                     <div class="carousel-caption d-none d-md-block text-start bg-dark bg-opacity-50 p-3 rounded">
                         <h2>Мастер-классы и события</h2>
                         <p>Регулярные встречи и выставки участников</p>
-                        <a href="{% url 'news_list' %}" class="btn btn-warning">Анонсы</a>
+                        <a href="{% url 'news_app:list' %}" class="btn btn-warning">Анонсы</a>
                     </div>
                 </div>
             </div>
@@ -94,13 +94,22 @@
     <section id="news" class="bg-light py-5 mb-5">
         <h2 class="mb-4">Анонсы и события</h2>
         <ul class="list-unstyled">
-            {% for news in latest_news|slice:":5" %}
+            {% for item in latest_news %}
                 <li class="mb-2">
-                    <a href="{% url 'news_detail' news.slug %}" class="fw-semibold">{{ news.title }}</a>
-                    <small class="text-muted"> — {{ news.published|date:"d.m.Y" }}</small>
+                    <a href="{% url 'news_app:detail' item.slug %}" class="fw-semibold">
+                        {{ item.title }}
+                    </a>
+                    <small class="text-muted">
+                        — {{ item.published_at|date:"d.m.Y" }}
+                    </small>
                 </li>
+            {% empty %}
+                <li>Пока нет опубликованных новостей.</li>
             {% endfor %}
         </ul>
-        <a href="{% url 'news_list' %}" class="btn btn-outline-secondary">Все новости</a>
+        <a href="{% url 'news_app:list' %}" class="btn btn-outline-secondary">
+            Все новости
+        </a>
     </section>
+
 {% endblock %}

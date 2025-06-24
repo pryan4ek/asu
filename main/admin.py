@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Club, Application, News
+from .models import Category, Club, Application
 from django.utils import timezone
 
 
@@ -34,16 +34,3 @@ class ApplicationAdmin(admin.ModelAdmin):
     @admin.action(description="Отклонить выбранные заявки")
     def reject_applications(self, request, queryset):
         queryset.update(status='rejected')
-
-
-@admin.register(News)
-class NewsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'is_approved', 'published_at')
-    list_filter = ('category', 'is_approved')
-    search_fields = ('title', 'content')
-    prepopulated_fields = {'slug': ('title',)}
-    actions = ('approve_news',)
-
-    @admin.action(description="Одобрить выбранные новости")
-    def approve_news(self, request, queryset):
-        queryset.update(is_approved=True, published_at=timezone.now())

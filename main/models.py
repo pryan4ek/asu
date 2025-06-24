@@ -1,8 +1,5 @@
 # main/models.py
-
-from django.conf import settings
 from django.db import models
-from django.urls import reverse
 from django.utils import timezone
 
 
@@ -92,30 +89,6 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.club.name} – {self.name}"
-
-
-class News(models.Model):
-    CATEGORY_CHOICES = [
-        ("news", "Новость"),
-        ("event", "Событие"),
-    ]
-
-    title = models.CharField("Заголовок", max_length=200)
-    slug = models.SlugField("URL-идентификатор", max_length=200, unique=True)
-    content = models.TextField("Содержимое")
-    category = models.CharField("Тип материала", max_length=10, choices=CATEGORY_CHOICES, default="news")
-    is_approved = models.BooleanField("Одобрено админом", default=False)
-    created_at = models.DateTimeField("Дата создания", default=timezone.now)
-    published_at = models.DateTimeField("Дата публикации", null=True, blank=True)
-
-    class Meta:
-        verbose_name = "Новость/Событие"
-        verbose_name_plural = "Новости и события"
-        ordering = ["-published_at"]
-
-    def __str__(self):
-        return self.title
-
 
 class Location(models.Model):
     name = models.CharField("Название площадки", max_length=150, unique=True)
